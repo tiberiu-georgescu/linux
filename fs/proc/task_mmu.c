@@ -1389,8 +1389,11 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
 		flags |= PM_SWAP;
 		if (is_pfn_swap_entry(entry))
 			page = pfn_swap_entry_to_page(entry);
-	} else if (pte_swp_uffd_wp_special(pte)) {
-		flags |= PM_UFFD_WP;
+	} else if (is_swap_pte(pte)) {
+		if (pte_swp_soft_dirty(pte))
+			flags |= PM_SOFT_DIRTY;
+		if (pte_swp_uffd_wp_special(pte))
+			flags |= PM_UFFD_WP;
 	}
 
 	if (page && !PageAnon(page))
