@@ -210,7 +210,7 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
 				 * could exist.
 				 */
 				set_pte_at(vma->vm_mm, addr, pte,
-					   pte_swp_mkuffd_wp_special(vma));
+					   pte_swp_mkuffd_wp_special(oldpte, vma));
 				pages++;
 			}
 		}

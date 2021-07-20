@@ -5666,7 +5666,7 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
 			if (unlikely(uffd_wp))
 				/* Safe to modify directly (none->non-present). */
 				set_huge_pte_at(mm, address, ptep,
-						pte_swp_mkuffd_wp_special(vma));
+						pte_swp_mkuffd_wp_special(pte, vma));
 		}
 		spin_unlock(ptl);
 	}

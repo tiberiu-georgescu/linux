@@ -142,7 +142,7 @@ pte_install_uffd_wp_if_needed(struct vm_area_struct *vma, unsigned long addr,
 
 	if (unlikely(arm_uffd_pte))
 		set_pte_at(vma->vm_mm, addr, pte,
-			   pte_swp_mkuffd_wp_special(vma));
+			   pte_swp_mkuffd_wp_special(*pte, vma));
 #endif
 }
 

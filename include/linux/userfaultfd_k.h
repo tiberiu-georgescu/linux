@@ -169,10 +169,11 @@ extern int userfaultfd_unmap_prep(struct vm_area_struct *vma,
 extern void userfaultfd_unmap_complete(struct mm_struct *mm,
 				       struct list_head *uf);
 
-static inline pte_t pte_swp_mkuffd_wp_special(struct vm_area_struct *vma)
+static inline pte_t pte_swp_mkuffd_wp_special(pte_t pte,
+				struct vm_area_struct *vma)
 {
 	WARN_ON_ONCE(vma_is_anonymous(vma));
-	return UFFD_WP_SWP_PTE_SPECIAL;
+	return pte_swp_mkuffd_wp(pte);
 }
 
 static inline bool pte_swp_uffd_wp_special(pte_t pte)
@@ -273,7 +274,8 @@ static inline void userfaultfd_unmap_complete(struct mm_struct *mm,
 {
 }
 
-static inline pte_t pte_swp_mkuffd_wp_special(struct vm_area_struct *vma)
+static inline pte_t pte_swp_mkuffd_wp_special(pte_t pte,
+				struct vm_area_struct *vma)
 {
 	return __pte(0);
 }
