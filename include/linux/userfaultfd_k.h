@@ -178,7 +178,7 @@ static inline pte_t pte_swp_mkuffd_wp_special(struct vm_area_struct *vma)
 static inline bool pte_swp_uffd_wp_special(pte_t pte)
 {
 #ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-	return pte_same(pte, UFFD_WP_SWP_PTE_SPECIAL);
+	return pte_to_special_pte(pte) & UFFD_WP_SWP_PTE_SPECIAL;
 #else
 	return false;
 #endif

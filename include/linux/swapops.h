@@ -86,14 +86,32 @@ static inline int is_swap_pte(pte_t pte)
  * A swap-like special pte should only be used as special marker to trigger a
  * page fault.  We should treat them similarly as pte_none() in most cases,
  * except that it may contain some special information that can persist within
- * the pte.  Currently the only special swap pte is UFFD_WP_SWP_PTE_SPECIAL.
+ * the pte.
  *
  * Note: we should never call pte_to_swp_entry() upon a special swap pte,
  * Because a swap special pte does not contain a swap entry!
  */
 static inline bool is_swap_special_pte(pte_t pte)
 {
-	return pte_swp_uffd_wp_special(pte);
+	return !(pte & ~PTE_SPECIAL_FLAGS_MASK)
+		&& pte_special_flags(pte);
+}
+
+/*
+ * A swap-like special pte can only exist if
+ *
+ * (a) Contains one or more of the special swap pte flags
+ *
+ * (b) Does not contain any other bit set
+ *
+ * By this rule, we can retrieve the "special pte" from a pte only if
+ * is_swap_special_pte returns true.
+ */
+static inline pte_t pte_to_special_pte(pte_t pte)
+{
+	if (is_swap_special_pte(pte))
+		return pte_special_flags(pte);
+	return 0;
 }
 
 /*

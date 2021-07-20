@@ -107,6 +107,12 @@
 #define _PAGE_SWP_UFFD_WP	(_AT(pteval_t, 0))
 #endif
 
+#ifdef CONFIG_MEM_SOFT_DIRTY || CONFIG_HAVE_ARCH_USERFAULTFD_WP
+#define PTE_SPECIAL_FLAGS_MASK       (_PAGE_SWP_SOFT_DIRTY | _PAGE_SWP_UFFD_WP)
+#else
+#define PTE_SPECIAL_FLAGS_MASK       (_AT(pteval_t, 0))
+#endif
+
 #if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
 #define _PAGE_NX	(_AT(pteval_t, 1) << _PAGE_BIT_NX)
 #define _PAGE_DEVMAP	(_AT(u64, 1) << _PAGE_BIT_DEVMAP)
@@ -468,6 +474,11 @@ static inline pteval_t native_pte_val(pte_t pte)
 static inline pteval_t pte_flags(pte_t pte)
 {
 	return native_pte_val(pte) & PTE_FLAGS_MASK;
+}
+
+static inline pteval_t pte_special_flags(pte_t pte)
+{
+	return pte_flags(pte) & PTE_SPECIAL_FLAGS_MASK;
 }
 
 #define __pte2cm_idx(cb)				\
